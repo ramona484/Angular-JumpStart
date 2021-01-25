@@ -1,0 +1,20 @@
+sudo: required
+dist: trusty
+language: node_js
+node_js:
+  - "12"
+
+services:
+  - docker
+
+before_script:
+  - npm install
+script:
+  - docker build -t nginx-angular-jumpstart .
+
+after_success:
+  - docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
+  - docker tag angular-jumpstart $DOCKER_USER/angular-jumpstart:$TRAVIS_BUILD_NUMBER
+  - docker push $DOCKER_USER/angular-jumpstart:$TRAVIS_BUILD_NUMBER
+  - docker tag angular-jumpstart $DOCKER_USER/angular-jumpstart:latest
+  - docker push $DOCKER_USER/angular-jumpstart:latest
